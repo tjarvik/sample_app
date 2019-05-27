@@ -3,6 +3,7 @@ require 'test_helper'
 class UsersEditTest < ActionDispatch::IntegrationTest
   def setup
     @user = users(:michael)
+    @other_user = users(:eep)
   end
 
   test "unsuccessful edit" do
@@ -15,6 +16,12 @@ class UsersEditTest < ActionDispatch::IntegrationTest
                                               password_confirmation: "bar" } }
 
     assert_template 'users/edit'
+  end
+
+  test "unsuccessful show of non-activated user" do
+    log_in_as(@other_user)
+    get edit_user_path(@other_user)
+    assert_redirected_to login_url
   end
 
   test "successful edit with friendly forwarding" do
